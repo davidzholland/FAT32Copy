@@ -61,9 +61,9 @@ def get_files(path):
 def compare_by_track_natural(item1, item2):
     # Primary sort by track number meta data
     if TinyTag.get(item1).track is None and TinyTag.get(item2).track is not None:
-        return -1
-    elif TinyTag.get(item1).track is not None and TinyTag.get(item2).track is None:
         return 1
+    elif TinyTag.get(item1).track is not None and TinyTag.get(item2).track is None:
+        return -1
     elif TinyTag.get(item1).track is not None and TinyTag.get(item2).track is not None:
         if int(TinyTag.get(item1).track) > int(TinyTag.get(item2).track):
             return 1
