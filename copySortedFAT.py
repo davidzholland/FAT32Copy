@@ -60,24 +60,27 @@ def get_files(path):
 
 def compare_by_track_natural(item1, item2):
     # Primary sort by track number meta data
-    if TinyTag.get(item1).track is None and TinyTag.get(item2).track is not None:
-        return 1
-    elif TinyTag.get(item1).track is not None and TinyTag.get(item2).track is None:
+    try:
+        if TinyTag.get(item1).track is None and TinyTag.get(item2).track is not None:
+            return 1
+        elif TinyTag.get(item1).track is not None and TinyTag.get(item2).track is None:
+            return -1
+        elif TinyTag.get(item1).track is not None and TinyTag.get(item2).track is not None:
+            if int(TinyTag.get(item1).track) > int(TinyTag.get(item2).track):
+                return 1
+            elif int(TinyTag.get(item1).track) < int(TinyTag.get(item2).track):
+                return -1
+            else:
+                return 0
+        else:
+            # Secondary sort by file name (natural sort)
+            sorted_list = natural_sort([item1, item2])
+            if sorted_list[0] == item1:
+                return -1
+            else:
+                return 1
+    except:
         return -1
-    elif TinyTag.get(item1).track is not None and TinyTag.get(item2).track is not None:
-        if int(TinyTag.get(item1).track) > int(TinyTag.get(item2).track):
-            return 1
-        elif int(TinyTag.get(item1).track) < int(TinyTag.get(item2).track):
-            return -1
-        else:
-            return 0
-    else:
-        # Secondary sort by file name (natural sort)
-        sorted_list = natural_sort([item1, item2])
-        if sorted_list[0] == item1:
-            return -1
-        else:
-            return 1
 
 def sort_by_track_and_filename(source_files):
     return sorted(source_files, key=functools.cmp_to_key(compare_by_track_natural))
@@ -93,20 +96,24 @@ def copy_fat_directory(source, destination):
         # Define destination file path and use original file name
         destination_file_path = source_file_path.replace(source, destination)
         # Remove track number from file name
-        if TinyTag.get(source_file_path).track is not None:
-            track_characters = len(str(TinyTag.get(source_file_path).track))
-            if (
-                os.path.basename(destination_file_path)[:track_characters + 1] == str(TinyTag.get(source_file_path).track) + ' '
-                or os.path.basename(destination_file_path)[:track_characters + 2] == '0' + str(TinyTag.get(source_file_path).track) + ' '
-            ):
-                destination_file_path = os.path.dirname(destination_file_path) + os.path.sep + re.sub('^[0-9]+\s(\-\s)?', '', os.path.basename(destination_file_path))
+        try:
+            if TinyTag.get(source_file_path).track is not None:
+                track_characters = len(str(TinyTag.get(source_file_path).track))
+                if (
+                    os.path.basename(destination_file_path)[:track_characters + 1] == str(TinyTag.get(source_file_path).track) + ' '
+                    or os.path.basename(destination_file_path)[:track_characters + 2] == '0' + str(TinyTag.get(source_file_path).track) + ' '
+                ):
+                    destination_file_path = os.path.dirname(destination_file_path) + os.path.sep + re.sub('^[0-9]+\s(\-\s)?', '', os.path.basename(destination_file_path))
+        except:
+            pass
         # Create directory if doesn't exist
         os.makedirs(os.path.dirname(destination_file_path), exist_ok=True)
-        # Copy file
-        print('Copying to: ', destination_file_path)
-        shutil.copy(source_file_path, destination_file_path)
-        # Iterate files with a 2.1s pause
-        time.sleep(2.1)
+        if not os.path.exists(destination_file_path):
+            # Copy file
+            print('Copying to: ', destination_file_path)
+            shutil.copy(source_file_path, destination_file_path)
+            # Iterate files with a 2.1s pause
+            time.sleep(2.1)
 
 def natural_sort(l): 
     convert = lambda text: int(text) if text.isdigit() else text.lower() 
