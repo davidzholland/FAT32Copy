@@ -20,7 +20,7 @@ A few key points:
 ### Usage
 
 1. Ensure the drive is empty
-
-```sh
-python copy_files.py /Full/Path/To/Source\ Directory/ /Full/Path/To/Destination/Drive/
-```
+2. Run the copy script.
+    ```sh
+    python copy_files.py /Full/Path/To/Source\ Directory/ /Full/Path/To/Destination/Drive/
+    ```
