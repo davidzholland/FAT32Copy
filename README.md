@@ -10,6 +10,8 @@ A few key points:
 
 * The primary sort is by track number meta data. Secondary sort is a natural sort by file name.
 * Track numbers are removed from file names when sorting by track number for better display on small screens.
+* Nested folders are not maintained. All folders are copied to the root and folder names concatenated.
+   * This is done as some devices only display the nested folder name. Therefore, the folder should include artist name + album name for better context. In this case, all folders can reside in a flat hierarchy i.e. the root.
 * No deletion is performed.
 * Script can effectively resume where left off as it will skip existing files. I.e. If you encounter an error or files that are missing track number meta data, you can delete just the specific folder in question from the drive and re-run the script.
 
